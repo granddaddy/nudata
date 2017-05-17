@@ -1,0 +1,13 @@
+Platform Developer / Engineer Code Test
+ 
+In your favourite programming language (PHP or Python preferred):
+Write code that will find a duplicate value in an array.
+Do the same for dictionaries.
+ 
+Write code that will sort the contents of a file. Assume there is one 32-bit number per line of the file. The file contains 5 billion numbers. The computer that is running this has 8 GB of memory and 256 GB of disk space.
+ 
+Numerous components on a network, such as DNS servers, switches, load balancers, and others can generate errors anywhere in the life of a given request. The usual technique for dealing with these error responses in a networked environment is to implement retries in the client application. This technique increases the reliability of the application and reduces operational costs for the developer. Write code that implements automatic retry logic and simulates exponential backoff and jitter. For the purposes of this code test, assume that the code you are writing will retry on server or throttling errors but will halt on client errors.
+ 
+Package managers can be used to install software packages such as RPMs. Generally, companies and individuals host mirrors and package repositories in a website or ftp. An alternative is to use a system like S3 to host a repository. While public repositories are great, sometimes a privately hosted repository is desired for internal software. In these situations, you could host a private web server in your environment. Alternatively, a “serverless” approach could be to use S3 with an authentication scheme like IAM through the usage of a yum plugin. Write a value state / formula for a configuration management tool (SaltStack preferred) to install a s3 yum plugin (https://github.com/seporaitis/yum-s3-iam) and configure it.
+ 
+Building an RPM for easy management of internal software is a common strategy to deploy software. Create an RPM of a command line tool that prints out “Awe$ome”. Bonus: install this in a fashion like #4 above.
