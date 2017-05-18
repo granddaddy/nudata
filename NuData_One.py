@@ -2,22 +2,18 @@
 # Write code that will find a duplicate value in an array.
 # Do the same for dictionaries.
 
-from collections import Hashable
-
 class One:
 	'Class for question one of NuData Security Engineer Code Test'
 	
 	# function that works only on valid input types
-	def findDuplicateHelper(self, input):
+	@staticmethod
+	def findDuplicateHelper(input):
 
 		ret = []
 
 		if len(input) <= 0:
 			return ret
-
-		everyHashable = True
-
-
+			
 		instances = {}
 
 		# first iteration through list to check for instances
@@ -41,21 +37,22 @@ class One:
 
 		return ret
 
-	def findDuplicateInArray(self, input):
+	@staticmethod
+	def findDuplicateInArray(input):
 
 		# only does type checking and delegates logic to helper function
 		if type(input) is not list:
 			raise TypeError('Input must be of type list')
 
 		else:
-			return self.findDuplicateHelper(input)
+			return One.findDuplicateHelper(input)
 
-
-	def findDuplicateInDict(self, input):
+	@staticmethod
+	def findDuplicateInDict(input):
 
 		# only does type checking and delegates logic to helper function
 		if type(input) is not dict:
 			raise TypeError('Input must be of type dict')
 
 		else:
-			return self.findDuplicateHelper(input.values())
+			return One.findDuplicateHelper(input.values())
