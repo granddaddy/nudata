@@ -21,21 +21,25 @@
 # space complexity is only linear to original file
 # this is due to save 15 additional files totalling another 60GB
 
-# time complexity totalss nlogn to heapify the partitions
+# time complexity totals nlogn to heapsort the partitions
 # of the large file
 # then linear to merge the files
 
 import heapq
 from itertools import islice
+import sys
 
 class Two:
 
-	def __init__(self, fileName, partitionLines = int(2**32/12)):
+	def __init__(self, fileName, partitionLines = int(2**27/12), n = None):
 		self.partitionLines = partitionLines
 
 		self.fileName = fileName
 
-		self.fileLength = Two.fileLineCount(self.fileName)
+		if n == None:
+			self.fileLength = Two.fileLineCount(self.fileName)
+		else:
+			self.fileLength = int(n)
 
 	# most efficient way to read file length in Python
 	@staticmethod
@@ -63,41 +67,35 @@ class Two:
 	def partitionFile(self):
 		lineCount = 0
 
+		f = open(self.fileName, 'r')
+
 		self.partitionFiles = []
 
 		# to get partitionCount to start at 0, pass it -1 to begin
 		partitionCount, partitionStart, partitionEnd, partitionFileName = self.createNewPartition(-1, 0, 0)
-		partitionFile = open(partitionFileName, 'w')
-		self.partitionFiles.append(partitionFileName)
-
-		f = open(self.fileName, 'r')
+		currArr = []
 
 		for line in f:
 			if lineCount >= partitionEnd:
-				partitionFile.close()
+				self.partitionFiles.append(self.sortFile(currArr, partitionFileName))
+				currArr = []
 				partitionCount, partitionStart, partitionEnd, partitionFileName = \
 					self.createNewPartition(partitionCount, partitionStart, partitionEnd)
-				partitionFile = open(partitionFileName, 'w')
-				self.partitionFiles.append(partitionFileName)
 
-			partitionFile.write(line)
+
+			currArr.append(int(line))
 			lineCount = lineCount + 1
 
-		partitionFile.close()
+		if len(currArr) > 0:
+			self.partitionFiles.append(self.sortFile(currArr, partitionFileName))
+			currArr = []
+
 		f.close()
 		return self.partitionFiles
 
-	def sortFile(self, fileName):
-		f = open(fileName, 'r')
-
-		arr = []
-
-		for line in f:
-			arr.append(int(line))
+	def sortFile(self, arr, fileName):
 
 		heapq.heapify(arr)
-
-		f.close()
 
 		f = open(fileName, 'w')
 
@@ -158,9 +156,23 @@ class Two:
 		except:
 			self.partitionFile()
 
-		for fileName in self.partitionFiles:
-			self.sortFile(fileName)
-
 		self.sortedFiles = True
 
 		return self.merge()
+
+if __name__ == '__main__':
+
+	if (len(sys.argv) < 2):
+		print 'usage: python NuData_Two filename [n]'
+
+	else:
+		if (len(sys.argv) == 2):
+			t = Two(sys.argv[1])
+			t.sort()
+
+		if (len(sys.argv) == 3):
+			t = Two(sys.argv[1], n = sys.argv[2])
+			t.sort()
+
+		else:
+			print 'usage: python NuData_Two filename [n]'

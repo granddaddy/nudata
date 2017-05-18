@@ -77,9 +77,7 @@ class Test_NuData_Two(unittest.TestCase):
 
 		files = t.partitionFile()
 
-		fileName = t.sortFile(files[0])
-
-		f = open(fileName, 'r')
+		f = open(files[0], 'r')
 
 		lastInt = int(f.readline())
 
