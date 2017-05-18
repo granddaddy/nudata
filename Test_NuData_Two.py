@@ -30,7 +30,6 @@ class Test_NuData_Two(unittest.TestCase):
 		# when partitionLines is 10
 		t1 = Two('sample_eleven.txt', 10)
 
-
 		self.assertEqual(
 			11, 
 			t1.fileLength
@@ -70,6 +69,48 @@ class Test_NuData_Two(unittest.TestCase):
 				10, 
 				Two.fileLineCount(files[i])
 				)
+
+
+	def test_sortFile(self):
+
+		t = Two('sample_small.txt', 10)
+
+		files = t.partitionFile()
+
+		fileName = t.sortFile(files[0])
+
+		f = open(fileName, 'r')
+
+		lastInt = int(f.readline())
+
+		for line in f:
+			x = int(line)
+			self.assertTrue(x >= lastInt)
+			lastInt = x
+
+		f.close()
+
+
+	def test_sort(self):
+		t = Two('sample_small.txt', 10)
+
+		t.sort()
+
+		f = open('sorted_sample_small.txt', 'r')
+
+		lastInt = int(f.readline())
+
+		
+		for line in f:
+			x = int(line)
+			self.assertTrue(x >= lastInt)
+			lastInt = x
+
+		self.assertEqual(
+			100, 
+			Two.fileLineCount('sorted_sample_small.txt')
+			)
+
 
 if __name__ == '__main__':
 	unittest.main()

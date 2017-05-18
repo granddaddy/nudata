@@ -86,3 +86,81 @@ class Two:
 		partitionFile.close()
 		f.close()
 		return self.partitionFiles
+
+	def sortFile(self, fileName):
+		f = open(fileName, 'r')
+
+		arr = []
+
+		for line in f:
+			arr.append(int(line))
+
+		heapq.heapify(arr)
+
+		f.close()
+
+		f = open(fileName, 'w')
+
+		for i in xrange(len(arr)):
+			f.write(str(heapq.heappop(arr)))
+			if i != len(arr):
+				f.write('\n')
+
+		f.close()
+
+		return fileName
+
+	def merge(self):
+
+		if not self.sortedFiles:
+			raise Exception("Please call sort")
+
+		files = []
+		filesPeek = []
+
+		# TODO utilize smarter file structure to add prefix to name
+		outName = 'sorted_' + self.fileName
+		out = open(outName, 'w')
+
+		for i in xrange(len(self.partitionFiles)):
+			f = open(self.partitionFiles[i], 'r')
+			val = f.readline()
+
+			# non-empty line
+			if len(val) > 0:
+				filesPeek.append(int(val))
+				files.append(f)
+
+		while len(filesPeek) > 0:
+
+			minIndex = 0
+			minVal = filesPeek[0]
+
+			for i in xrange(len(filesPeek)):
+				if filesPeek[i] < minVal:
+					minVal = filesPeek[i]
+					minIndex = i
+
+			out.write(str(minVal) + '\n')
+			newVal = files[minIndex].readline()
+
+			if len(newVal) > 0:
+				filesPeek[minIndex] = int(newVal)
+
+			else:
+				files.pop(minIndex)
+				filesPeek.pop(minIndex)
+
+
+	def sort(self):
+		try:
+			self.partitionFiles
+		except:
+			self.partitionFile()
+
+		for fileName in self.partitionFiles:
+			self.sortFile(fileName)
+
+		self.sortedFiles = True
+
+		return self.merge()
