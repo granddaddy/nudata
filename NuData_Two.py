@@ -12,11 +12,8 @@
 # log2(60 * 10^9) = 35
 # => non-in-place mergesort => 2100GB of additional files
 
-# instead we will implement heapsort on managable files sizes (4GB)
-# then merge the sorted files
-# 4GB to be safe on 8GB of memory
-
-# 4GB files => 60GB file creates 15 files
+# instead we will implement heapsort on managable partitions
+# then merge the sorted partitions
 
 # space complexity is only linear to original file
 # this is due to save 15 additional files totalling another 60GB
@@ -26,10 +23,15 @@
 # then linear to merge the files
 
 import heapq
-from itertools import islice
-import sys
 
 class Two:
+
+	# default partition is roughly 100MB
+	# 2^27 ~ 100MB then divide by 12 since
+	# a line is at most 12B
+
+	# partitionLines can be adjusted to optimize performance
+	# on memory and disk caching
 
 	def __init__(self, fileName, partitionLines = int(2**27/12), n = None):
 		self.partitionLines = partitionLines
@@ -72,21 +74,30 @@ class Two:
 		self.partitionFiles = []
 
 		# to get partitionCount to start at 0, pass it -1 to begin
-		partitionCount, partitionStart, partitionEnd, partitionFileName = self.createNewPartition(-1, 0, 0)
+		partitionCount, partitionStart, partitionEnd, partitionFileName = \
+		self.createNewPartition(-1, 0, 0)
 		currArr = []
 
 		for line in f:
 			if lineCount >= partitionEnd:
+				# indicates proceed to new partition
+
+				# sort immediately after partition
+				# in order to keep partition in memory
+				# and save time writing to disk
 				self.partitionFiles.append(self.sortFile(currArr, partitionFileName))
 				currArr = []
 				partitionCount, partitionStart, partitionEnd, partitionFileName = \
 					self.createNewPartition(partitionCount, partitionStart, partitionEnd)
 
 
+			# write line to partition
 			currArr.append(int(line))
 			lineCount = lineCount + 1
 
 		if len(currArr) > 0:
+			# sort and add the last partition that may not have been closed off
+			# in the loop
 			self.partitionFiles.append(self.sortFile(currArr, partitionFileName))
 			currArr = []
 
@@ -95,6 +106,7 @@ class Two:
 
 	def sortFile(self, arr, fileName):
 
+		# heapsort in place
 		heapq.heapify(arr)
 
 		f = open(fileName, 'w')
@@ -146,11 +158,16 @@ class Two:
 				filesPeek[minIndex] = int(newVal)
 
 			else:
-				files.pop(minIndex)
+				files.pop(minIndex).close()
 				filesPeek.pop(minIndex)
+
+		out.close()
 
 
 	def sort(self):
+
+		# requires partition before sorting
+		# in order to avoid memory issues
 		try:
 			self.partitionFiles
 		except:
@@ -162,16 +179,18 @@ class Two:
 
 if __name__ == '__main__':
 
-	if (len(sys.argv) < 2):
+	from sys import argv
+
+	if (len(argv) < 2):
 		print 'usage: python NuData_Two filename [n]'
 
 	else:
-		if (len(sys.argv) == 2):
-			t = Two(sys.argv[1])
+		if (len(argv) == 2):
+			t = Two(argv[1])
 			t.sort()
 
-		if (len(sys.argv) == 3):
-			t = Two(sys.argv[1], n = sys.argv[2])
+		if (len(argv) == 3):
+			t = Two(argv[1], n = argv[2])
 			t.sort()
 
 		else:

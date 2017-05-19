@@ -4,7 +4,6 @@
 # The computer that is running this has 8 GB of memory and 256 GB of disk space.
 
 import random
-import sys
 
 class SampleCreator:
 	'Class for question two of NuData Security Engineer Code Test'
@@ -24,9 +23,13 @@ class SampleCreator:
 
 		f.close()
 
+		return fileName
+
 if __name__ == '__main__':
 
-	if (len(sys.argv) != 3):
+	from sys import argv
+
+	if (len(argv) != 3):
 		print 'usage: python NuData_Two_SampleCreator filename n'
 
 	else:

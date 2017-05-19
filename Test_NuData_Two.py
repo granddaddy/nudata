@@ -1,5 +1,6 @@
 import unittest
 from NuData_Two import Two
+from NuData_Two_SampleCreator import SampleCreator
 
 class Test_NuData_Two(unittest.TestCase):
 
@@ -10,7 +11,6 @@ class Test_NuData_Two(unittest.TestCase):
 			100, 
 			t.fileLength
 			)
-
 
 	# file larger than memory (12GB)
 	# thus testing to see whether file is loaded into
@@ -109,6 +109,17 @@ class Test_NuData_Two(unittest.TestCase):
 			Two.fileLineCount('sorted_sample_small.txt')
 			)
 
+
+	# # very large test
+	# def test_large_sort(self):
+
+	# 	# approx 12GB file
+	# 	size = 1000000000
+
+	# 	f = SampleCreator.createFiles('sample_large.txt', size)
+
+	# 	t = Two(f, n = size)
+	# 	t.sort()
 
 if __name__ == '__main__':
 	unittest.main()
